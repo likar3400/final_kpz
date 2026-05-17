@@ -2,13 +2,13 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using RecipeFinder.Models;
 using RecipeFinder.Services;
-
+using final.Strategies;
 namespace RecipeFinder.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        private readonly IRecipeRepository _repository;
-        private readonly ISearchStrategy _searchStrategy;
+        private IRecipeRepository _repository;
+        private  ISearchStrategy _searchStrategy;
         private ObservableCollection<Recipe> _recipes;
         private string _searchText;
 
@@ -42,7 +42,16 @@ namespace RecipeFinder.ViewModels
 
         public ICommand SearchCommand { get; }
         public ICommand AddCommand { get; }
+        
+        public void UseNameSearch() 
+        {
+            _searchStrategy = new NameSearchStrategy();
+        }
 
+        public void UseIngredientSearch() 
+        {
+            _searchStrategy = new IngredientSearchStrategy();
+        }
         private void ExecuteSearch()
         {
             var filtered = _searchStrategy.Filter(_repository.GetAll(), SearchText);
